@@ -1,0 +1,21 @@
+{
+  "name": "aminalz",
+  "description": "aminalz - Save the aminalz!",
+  "main": "",
+  "authors": [
+    "Jim Tran",
+    "Justin Pirtle"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/cass-bonner/aminalz-ux",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "aws-sign-web": "^1.2.1"
+  }
+}

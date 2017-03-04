@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons right>
+      <button ion-button icon-left [navPush]="accountSignupPage" *ngIf="globals.userId === ''">
+        <ion-icon name="contact"></ion-icon>Register
+      </button>
+      <button ion-button icon-left [navPush]="accountSigninPage" *ngIf="globals.userId === ''">
+        <ion-icon name="log-in"></ion-icon>Sign In
+      </button>
+      <button ion-button icon-left (click)="globals.logout()" *ngIf="globals.userId !== ''">
+        <ion-icon name="log-out"></ion-icon>Sign Out
+      </button>
+    </ion-buttons>
+    <ion-title>aminalz</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content class='main'>
+  <div id='main-content'>
+    <img width='100%' src='assets/images/tiger.png'>
+    <div id='top'>
+      <span class='title' *ngIf="globals.userId == ''">aminalz</span>
+      <span class='title' *ngIf="globals.userId !== ''">Welcome, {{globals.getUserFirstName()}} {{globals.getUserLastName()}}</span>
+      <table border="0">
+      <tr>
+        <td><img src="assets/images/mailbox_on_door.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;Upload any resource.</td>
+        <td><img src="assets/images/global.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;See all processed data<br/>&nbsp;&nbsp;&nbsp;</td>
+        <td><img src="assets/images/danger.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;In danger?<br/>&nbsp;&nbsp;&nbsp;Tag #sos for immediate response.</td>
+      </tr>
+      </table>
+    </div>
+  </div><!-- main-content -->
+</ion-content>

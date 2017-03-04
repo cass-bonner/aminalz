@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-navbar>
+    <!--<button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>-->
+    <ion-title>Upload Resource</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <!--
+  <p *ngIf="submitted" style="color: #ea6153;">Please fill out all details accurately.</p>-->
+  <ion-list>
+    <form #theForm="ngForm" novalidate>
+
+      <p padding-left>
+        Optional metadata
+      </p>
+
+      <ion-item>
+        <ion-label>Resource type</ion-label>
+        <ion-select [(ngModel)]="formData.type" ngControl="type" name="type" #type="ngModel">
+          <ion-option value="desk" selected>Undetermined</ion-option>
+          <ion-option value="room" >Animal data</ion-option>
+          <ion-option value="desk">Image</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>Processing instructions</ion-label>
+        <ion-input [(ngModel)]="formData.name" ngControl="name" name="name" type="text" #name="ngModel" ></ion-input>
+      </ion-item>
+
+
+      <ion-item>
+        <ion-label floating>Tags</ion-label>
+        <ion-input [(ngModel)]="formData.description" ngControl="description" name="description" type="text" #description="ngModel" required></ion-input>
+      </ion-item>
+
+
+      <ion-input [(ngModel)]="formData.resourcefile" ngControl="resourcefile" hidden name="resourcefile" type="hidden" #resourcefile="ngModel" required></ion-input>
+
+      <div *ngIf="platform.is('cordova')">
+        <button ion-button (click)="selectImage()" type="submit" color="primary">Select resource file</button>
+      </div>
+      <div *ngIf="!platform.is('cordova')">
+        <input style='font-size:12px; width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;' id="imageUpload" type="file" accept="image/*">
+        <label ion-button (click)="attachImageUploadEventListener()" color="primary" style='none;display: inline-block;' for="imageUpload" id="imageUploadLabel">Select Resource</label>
+        <button ion-button (click)="selectImage()" style='visibility:hidden; text-transform:none;' type="submit" color="primary" id="imageUploadSubmit">UPLOAD</button>
+      </div>
+      <p [hidden]="resourcefile.valid || !submitted" color="danger" padding-left>
+        Resource file is required
+      </p>
+
+
+    </form>
+  </ion-list>
+
+  <br>
+
+  <ion-row responsive-sm>
+    <ion-col>
+      <button ion-button (click)="onSubmit(theForm)" type="submit" primary block>Upload Resource</button>
+    </ion-col>
+  </ion-row>
+
+</ion-content>
