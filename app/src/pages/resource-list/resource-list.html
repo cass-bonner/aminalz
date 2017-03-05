@@ -26,7 +26,7 @@
   <div *ngIf="globals.userId != ''">
     <ion-list>
       <ion-list-header style="color:white; background-color: #89bdd3 !important">
-        <b>{{location.name}}</b> 
+        <b>{{location.name}}</b>
       </ion-list-header>
       <ion-item *ngFor="let resource of resources">
         <ion-avatar item-left (click)="gotoResourceAvailabilityPage(location, resource)">
@@ -40,7 +40,7 @@
     </ion-list>
 
     <div align='center' *ngIf="globals.displayAdminFeatures() && initialized">
-      <button ion-button (click)="gotoResourceAddPage(location)" type="submit" color="primary">Add a resource</button>
+      <button ion-button (click)="gotoResourceAddPage(location)" type="submit" color="primary">Add resource</button>
     </div>
 
   </div>

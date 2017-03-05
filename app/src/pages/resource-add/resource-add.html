@@ -10,8 +10,8 @@
 
 <ion-content padding>
 
-  <!--
-  <p *ngIf="submitted" style="color: #ea6153;">Please fill out all details accurately.</p>-->
+
+  <!--<p *ngIf="submitted" style="color: #ea6153;">Please fill out all details accurately.</p>-->
   <ion-list>
     <form #theForm="ngForm" novalidate>
 
@@ -22,9 +22,9 @@
       <ion-item>
         <ion-label>Resource type</ion-label>
         <ion-select [(ngModel)]="formData.type" ngControl="type" name="type" #type="ngModel">
-          <ion-option value="desk" selected>Undetermined</ion-option>
-          <ion-option value="room" >Animal data</ion-option>
-          <ion-option value="desk">Image</ion-option>
+          <ion-option value="undetermined" selected>Undetermined</ion-option>
+          <ion-option value="animaldata" >Animal data</ion-option>
+          <ion-option value="photo">Photo</ion-option>
         </ion-select>
       </ion-item>
 

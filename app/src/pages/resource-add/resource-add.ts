@@ -40,24 +40,30 @@ export class UploadResourcesPage {
     this.submitted = true;
     if (form && form.valid) {
       this.addResource(form);
+    } else {
+      console.log("form is not valid");
     }
   }
 
   addResource(form) {
     this.submitted = true;
-    if (form && this.formData.name) {
+    console.log("adding resource");
+    if (form && this.formData.resourcefile) {
+
       let resource = {
-        locationId: this.location.locationId,
+        locationId: "77812650-00b6-11e7-b638-7703a6651896",
         name: this.formData.name,
         type: this.formData.type,
-        description: this.formData.description
+        description: this.formData.description,
+        resourcefile: this.formData.resourcefile
       };
       this.globals.displayLoader("Adding...");
-      this.customAuthClient.getClient().resourcesCreate(this.location.locationId, resource).subscribe(
+      this.customAuthClient.getClient().resourcesCreate("77812650-00b6-11e7-b638-7703a6651896", resource).subscribe(
         () => {
           this.globals.dismissLoader();
           this.globals.displayToast(`Resource successfully added.`);
           this.navCtrl.pop();
+          this.navCtrl.push(UploadResourcesPage);
         },
         (err) => {
           this.globals.dismissLoader();
@@ -165,6 +171,7 @@ export class UploadResourcesPage {
       return `${this.globals.getUnencodedUserId()}/${this.generateHash(originalFilename)}-${(new Date()).getTime()}.${originalFilename.split('.').pop()}`;
     }
     selectImageUsingNativeImageSelector() {
+      console.log("selectImageUsingNativeImageSelector");
       Logger.heading('Displaying ImageSelector');
       // this.profileImageURI = 'https://s3-${Config.PROFILE_IMAGES_S3_BUCKET_REGION}.amazonaws.com/${Config.PROFILE_IMAGES_S3_BUCKET}/test.jpg'; // TODO
       try {
@@ -252,7 +259,7 @@ export class UploadResourcesPage {
     }
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private globals: GlobalStateService, private customAuthClient: CustomAuthorizerClient, platform: Platform) {
-    this.location = navParams.data.location;
+    this.location = "77812650-00b6-11e7-b638-7703a6651896";
     this.platform = platform;
   }
 
