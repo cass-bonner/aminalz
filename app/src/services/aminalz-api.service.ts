@@ -16,6 +16,9 @@ export class CustomAuthorizerClient {
       options.headers.set(
         'Authorization',
         UserLoginService.getIdToken());
+      options.headers.set(
+        'Content-Type',
+        'application/json');
       console.log('%cCustom Authorizer Request:\n', Logger.LeadInStyle, options.method, options.url, '\nHeaders:', options.headers['_headersMap'], '\nBody:', options.body);
     });
     this.client = new DefaultApi(<any> httpService, Config.API_ENDPOINT);

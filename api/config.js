@@ -2,7 +2,7 @@
 
 var defaults = {
   AWS_PROFILE: 'default',
-  AWS_REGION: 'us-east-1',
+  AWS_REGION: 'us-west-2',
   ENVIRONMENT_STAGE: 'development',
   PROJECT_PREFIX: 'aminalz-api-',
   PACKAGE_VERSION: '1.0.0'

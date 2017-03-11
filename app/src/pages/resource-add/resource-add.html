@@ -16,27 +16,30 @@
     <form #theForm="ngForm" novalidate>
 
       <p padding-left>
-        Optional metadata
+        Optional Instructions
       </p>
 
       <ion-item>
         <ion-label>Resource type</ion-label>
-        <ion-select [(ngModel)]="formData.type" ngControl="type" name="type" #type="ngModel">
+        <ion-select [(ngModel)]="formData.resourceType" ngControl="resourceType" name="resourceType" #type="ngModel">
           <ion-option value="undetermined" selected>Undetermined</ion-option>
           <ion-option value="animaldata" >Animal data</ion-option>
-          <ion-option value="photo">Photo</ion-option>
+          <ion-option value="sample">Sample</ion-option>
+          <ion-option value="email">Email</ion-option>
+          <ion-option value="notification">Notification</ion-option>
+          <ion-option value="notification">Task</ion-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label floating>Processing instructions</ion-label>
-        <ion-input [(ngModel)]="formData.name" ngControl="name" name="name" type="text" #name="ngModel" ></ion-input>
+        <ion-input [(ngModel)]="formData.name" ngControl="processingInstructions" name="processingInstructions" type="text" #name="ngModel" ></ion-input>
       </ion-item>
 
 
       <ion-item>
         <ion-label floating>Tags</ion-label>
-        <ion-input [(ngModel)]="formData.description" ngControl="description" name="description" type="text" #description="ngModel" required></ion-input>
+        <ion-input [(ngModel)]="formData.tags" ngControl="tags" name="tags" type="text" #description="ngModel" required></ion-input>
       </ion-item>
 
 

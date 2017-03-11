@@ -1,404 +1,643 @@
+---
 swagger: "2.0"
 info:
   version: "1.0.0"
-  title: aminalz-API
-# during dev, should point to your local machine
-host: localhost:10010
-# basePath prefixes all resource paths
-basePath: /
-#
+  title: "aminalz-API"
+host: "qgj0y0bph7.execute-api.us-west-2.amazonaws.com"
+basePath: "/development"
 schemes:
-  # tip: remove http to make production-grade
-  - http
-  - https
-# format of bodies a client can send (Content-Type)
-consumes:
-  - application/json
-# format of the responses to the client (Accepts)
-produces:
-  - application/json
+- "https"
 paths:
   /locations:
     get:
-      description: Returns List of 'Locations'
-      # used as the method name of the controller
-      operationId: locations-List
+      operationId: "locations-List"
+      produces:
+      - "application/json"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/LocationsListResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - aminalz-userPool-authorizer: []
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-locations-List/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     post:
-      description: Adds a Location
-      operationId: locations-Create
+      operationId: "locations-Create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/Location"
+      - in: "body"
+        name: "Location"
+        required: true
+        schema:
+          $ref: "#/definitions/Location"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/Location"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - sigv4: []
-
-  /locations/{locationId}:
-    delete:
-      description: Deletes a Location
-      operationId: locations-Delete
-      parameters:
-      - $ref: "#/parameters/LocationId"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-locations-Create/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    options:
+      consumes:
+      - "application/json"
       responses:
-        "200":
-          description: Success
-        # responses may fall through to errors
-        default:
-          description: Error
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET,POST'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+  /locations/{locationId}:
+    get:
+      operationId: "locations-Get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Location"
+      security:
+      - sigv4: []
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-locations-Get/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    delete:
+      operationId: "locations-Delete"
+      parameters:
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
       security:
       - aminalz-custom-authorizer: []
-    get:
-      description: Returns a Location
-      # used as the method name of the controller
-      operationId: locations-Get
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-locations-Delete/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    options:
+      consumes:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/LocationId"
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
-          schema:
-            # a pointer to a definition
-            $ref: "#/definitions/Location"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-      security:
-      - sigv4: []
-
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
   /locations/{locationId}/resources:
     get:
-      description: Returns list of 'Resources'
-      operationId: resources-List
+      operationId: "resources-List"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/LocationId"
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/ResourcesListResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
       security:
       - sigv4: []
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-resources-List/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     post:
-      description: Add Resource
-      operationId: resources-Create
+      operationId: "resources-Create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/LocationId"
-      - $ref: "#/parameters/Resource"
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/Resource"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-      security:
-      - aminalz-custom-authorizer: []
-
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+      x-amazon-apigateway-integration:
+        credentials: "arn:aws:iam::970386504547:role/aminalz-apigateway"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{ \n\"stateMachineArn\":\"arn:aws:states:us-west-2:970386504547:stateMachine:proceso-coordinate\"\
+            , \n\"input\" : \"$util.escapeJavaScript($input.json('$'))\"\n}"
+        uri: "arn:aws:apigateway:us-west-2:states:action/StartExecution"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    options:
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
   /locations/{locationId}/resources/{resourceId}:
     get:
-      description: Get resource
-      operationId: resources-Get
+      operationId: "resources-Get"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/LocationId"
-      - $ref: "#/parameters/ResourceId"
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "resourceId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/Resource"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - sigv4: []
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-resources-Get/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     delete:
-      description: Deletes a Resource
-      operationId: resources-Delete
+      operationId: "resources-Delete"
       parameters:
-      - $ref: "#/parameters/LocationId"
-      - $ref: "#/parameters/ResourceId"
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "resourceId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+        200:
+          description: "200 response"
       security:
       - aminalz-custom-authorizer: []
-
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-resources-Delete/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    options:
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "resourceId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
   /locations/{locationId}/resources/{resourceId}/bookings:
     get:
-      description: Returns List of Bookings associated with Resource
-      operationId: bookings-ListByResourceId
+      operationId: "bookings-ListByResourceId"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/LocationId"
-      - $ref: "#/parameters/ResourceId"
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "resourceId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/BookingsListResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - sigv4: []
-
-  /users/{userId}/bookings/:
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-bookings-ListByResourceId/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    options:
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "locationId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "resourceId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+  /users/{userId}/bookings:
     get:
-      description: Returns List of Bookings associated with a User
-      operationId: bookings-ListByUserId
+      operationId: "bookings-ListByUserId"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/UserId"
+      - name: "userId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/BookingsListResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - sigv4: []
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-bookings-ListByUserId/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     post:
-      description: Add Booking
-      operationId: bookings-Create
+      operationId: "bookings-Create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/UserId"
-      - $ref: "#/parameters/Booking"
+      - name: "userId"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "Booking"
+        required: true
+        schema:
+          $ref: "#/definitions/Booking"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/Booking"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - sigv4: []
-
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-bookings-Create/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    options:
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "userId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET,POST'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
   /users/{userId}/bookings/{bookingId}:
     get:
-      description: Get booking
-      operationId: bookings-Get
+      operationId: "bookings-Get"
+      produces:
+      - "application/json"
       parameters:
-      - $ref: "#/parameters/UserId"
-      - $ref: "#/parameters/BookingId"
+      - name: "userId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "bookingId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "200 response"
           schema:
             $ref: "#/definitions/Booking"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
       security:
       - sigv4: []
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-bookings-Get/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     delete:
-      description: Delete booking
-      operationId: bookings-Delete
+      operationId: "bookings-Delete"
       parameters:
-      - $ref: "#/parameters/UserId"
-      - $ref: "#/parameters/BookingId"
+      - name: "userId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "bookingId"
+        in: "path"
+        required: true
+        type: "string"
       responses:
-        "200":
-          description: Success
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+        200:
+          description: "200 response"
       security:
       - sigv4: []
-parameters:
-  Location:
-    in: "body"
-    name: "body"
-    required: true
-    schema:
-      $ref: "#/definitions/Location"
-  LocationId:
-    in: "path"
-    name: "locationId"
-    required: true
-    type: string
-  Resource:
-    in: "body"
-    name: "body"
-    required: true
-    schema:
-      $ref: "#/definitions/Resource"
-  ResourceId:
-    in: "path"
-    name: "resourceId"
-    required: true
-    type: string
-  UserId:
-    in: "path"
-    name: "userId"
-    required: true
-    type: string
-  BookingId:
-    in: "path"
-    name: "bookingId"
-    required: true
-    type: string
-  Booking:
-    in: "body"
-    name: "body"
-    required: true
-    schema:
-      $ref: "#/definitions/Booking"
-# complex objects have schema definitions
-definitions:
-  LocationsListResponse:
-    required:
-    - items
-    properties:
-      items:
-        type: array
-        items:
-          $ref: "#/definitions/Location"
-  Location:
-    required:
-    - name
-    properties:
-      locationId:
-        type: string
-      name:
-        type: string
-      description:
-        type: string
-      imageUrl:
-        type: string
-  ResourcesListResponse:
-    required:
-    - items
-    properties:
-      items:
-        type: array
-        items:
-          $ref: "#/definitions/Resource"
-  Resource:
-    required:
-    - name
-    properties:
-      resourceId:
-        type: string
-      locationId:
-        type: string
-      name:
-        type: string
-      description:
-        type: string
-  BookingsListResponse:
-    required:
-    - items
-    properties:
-      items:
-        type: array
-        items:
-          $ref: "#/definitions/Booking"
-  Booking:
-    required:
-    - locationId
-    - resourceId
-    - userId
-    properties:
-      bookingId:
-        type: string
-      locationId:
-        type: string
-      locationName:
-        type: string
-      resourceId:
-        type: string
-      userId:
-        type: string
-      userFirstName:
-        type: string
-      userLastName:
-        type: string
-      resourceName:
-        type: string
-      resourceDescription:
-        type: string
-      timeslot:
-        type: string
-      startTimeIsoTimestamp:
-        type: string
-      startTimeEpochTime:
-        type: number
-      endTimeIsoTimestamp:
-        type: string
-      endTimeEpochTime:
-        type: number
-  ErrorResponse:
-    required:
-      - message
-      - type
-    properties:
-      message:
-        type: string
-      type:
-        type: string
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-bookings-Delete/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    options:
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "userId"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "bookingId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
 securityDefinitions:
   aminalz-custom-authorizer:
     type: "apiKey"
     name: "Authorization"
     in: "header"
     x-amazon-apigateway-authtype: "custom"
+    x-amazon-apigateway-authorizer:
+      authorizerUri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:970386504547:function:aminalz-api-development-authorizer-Custom/invocations"
+      authorizerResultTtlInSeconds: 300
+      type: "token"
   aminalz-userPool-authorizer:
     type: "apiKey"
     name: "Authorization"
     in: "header"
     x-amazon-apigateway-authtype: "cognito_user_pools"
+    x-amazon-apigateway-authorizer:
+      providerARNs:
+      - "arn:aws:cognito-idp:us-west-2:970386504547:userpool/us-west-2_qxS0yIPtK"
+      type: "cognito_user_pools"
   sigv4:
     type: "apiKey"
     name: "Authorization"
     in: "header"
     x-amazon-apigateway-authtype: "awsSigv4"
+definitions:
+  BookingsListResponse:
+    required:
+    - "items"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Booking"
+  Resource:
+    required:
+    - "name"
+    properties:
+      resourceId:
+        type: "string"
+      locationId:
+        type: "string"
+      name:
+        type: "string"
+      description:
+        type: "string"
+  ResourcesListResponse:
+    required:
+    - "items"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Resource"
+  Booking:
+    required:
+    - "locationId"
+    - "resourceId"
+    - "userId"
+    properties:
+      bookingId:
+        type: "string"
+      locationId:
+        type: "string"
+      locationName:
+        type: "string"
+      resourceId:
+        type: "string"
+      userId:
+        type: "string"
+      userFirstName:
+        type: "string"
+      userLastName:
+        type: "string"
+      resourceName:
+        type: "string"
+      resourceDescription:
+        type: "string"
+      timeslot:
+        type: "string"
+      startTimeIsoTimestamp:
+        type: "string"
+      startTimeEpochTime:
+        type: "number"
+      endTimeIsoTimestamp:
+        type: "string"
+      endTimeEpochTime:
+        type: "number"
+  LocationsListResponse:
+    required:
+    - "items"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Location"
+  Location:
+    required:
+    - "name"
+    properties:
+      locationId:
+        type: "string"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      imageUrl:
+        type: "string"

@@ -11,7 +11,7 @@
         <ion-icon name="log-out"></ion-icon>Sign Out
       </button>
     </ion-buttons>
-    <ion-title>aminalz</ion-title>
+    <ion-title>Welcome to aminalz!</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content class='main'>
@@ -22,9 +22,13 @@
       <span class='title' *ngIf="globals.userId !== ''">Welcome, {{globals.getUserFirstName()}} {{globals.getUserLastName()}}</span>
       <table border="0">
       <tr>
-        <td><img src="assets/images/mailbox_on_door.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;Upload any resource.</td>
-        <td><img src="assets/images/global.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;See all processed data<br/>&nbsp;&nbsp;&nbsp;</td>
-        <td><img src="assets/images/danger.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;In danger?<br/>&nbsp;&nbsp;&nbsp;Tag #sos for immediate response.</td>
+        <td><img src="assets/images/mailbox_on_door.png" width="150"/><br/>&nbsp;Process Resource</td>
+      </tr>
+      <!--<tr>-->
+        <!--<td><img src="assets/images/global.png" width="100"/><br/>&nbsp;&nbsp;&nbsp;See all processed data<br/>&nbsp;&nbsp;&nbsp;</td>-->
+      <!--</tr>-->
+      <tr>
+          <td><img src="assets/images/danger.png" width="150"/><br/>&nbsp;In danger?<br/>&nbsp;Tag #sos.</td>
       </tr>
       </table>
     </div>

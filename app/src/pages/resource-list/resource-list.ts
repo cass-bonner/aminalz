@@ -77,7 +77,7 @@ export class ResourceListPage {
     this.iamAuthClient.getClient().resourcesList(locationId).subscribe(
       (data) => {
         this.resources = data.items.sort((a, b) => {
-          return a.name.localeCompare(b.name);
+          return a.resourcefile.localeCompare(b.resourcefile);
         });
         this.globals.dismissLoader();
         this.initialized = true;

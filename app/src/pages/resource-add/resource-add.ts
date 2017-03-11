@@ -26,10 +26,12 @@ export class UploadResourcesPage {
   submitted: boolean = false;
 
   public formData = {
-    type: "",
-    name: "",
+    resourceType: "",
+    processingInstructions: "",
+    tags: "",
     description: "",
     resourcefile: ""
+
   };
 
 
@@ -38,7 +40,7 @@ export class UploadResourcesPage {
   onSubmit(form) {
   console.log("Form:",form);
     this.submitted = true;
-    if (form && form.valid) {
+    if (form) {
       this.addResource(form);
     } else {
       console.log("form is not valid");
@@ -51,13 +53,17 @@ export class UploadResourcesPage {
     if (form && this.formData.resourcefile) {
 
       let resource = {
-        locationId: "77812650-00b6-11e7-b638-7703a6651896",
-        name: this.formData.name,
-        type: this.formData.type,
+        resourceType: this.formData.resourceType,
+        processingInstructions: this.formData.processingInstructions,
+        tags: this.formData.tags,
         description: this.formData.description,
         resourcefile: this.formData.resourcefile
       };
+      let input = {
+        input: resource
+      };
       this.globals.displayLoader("Adding...");
+      console.log("resource:", resource);
       this.customAuthClient.getClient().resourcesCreate("77812650-00b6-11e7-b638-7703a6651896", resource).subscribe(
         () => {
           this.globals.dismissLoader();
@@ -119,16 +125,18 @@ export class UploadResourcesPage {
     let bucketName = Config.PROFILE_IMAGES_S3_BUCKET;
     console.log(`Attempting image upload to ${bucketName}/${key}`);
     let s3bucket = new AWS.S3({region: Config.REGION, params: {Bucket: bucketName}});
-    let params = {Key: key, Body: file};
+    let metadata ={'albumid': 'aminalz/photos', 'userid': 'aminalz'};
+    let params = {Key: key, Body: file, Metadata: metadata};
+
     s3bucket.upload(params, (err, data)=> {
       this.globals.dismissLoader();
       if (err) {
-        let errorMessage = `Error uploading image to S3: ${err}`
+        let errorMessage = `Error uploading resource to S3: ${err}`
         this.globals.displayAlert('Error encountered', errorMessage);
         console.log(errorMessage);
         console.log(err);
       } else {
-        console.log(`Successfully uploaded image to S3.`);
+        console.log(`Successfully uploaded resource to S3.`);
         this.profileImageURI = `https://s3.amazonaws.com/${Config.PROFILE_IMAGES_S3_BUCKET}/${key}`;
         this.formData.resourcefile=this.profileImageURI
         console.log(`Image can be viewed at: ${this.profileImageURI}`)
