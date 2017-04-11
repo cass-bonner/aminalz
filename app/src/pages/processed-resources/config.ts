@@ -9,8 +9,8 @@ export interface Config {
 }
 
 export const CONFIG: Config = {
-  AccessKeyId : "AKIAIEMY3Y6RPV3UPQ4Q",
-  SecretAccessKey : "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",
+  AccessKeyId : "",
+  SecretAccessKey : "",
   DDBAlbumMetadataTable : "photo-sharing-backend-AlbumMetadataDDBTable-15G47AW7PSP36",
   Region : "us-west-2",   // might be replaced if you launched the template in a different region
   DDBImageMetadataTable : "photo-sharing-backend-ImageMetadataDDBTable-1BGNMQLEZKR60",

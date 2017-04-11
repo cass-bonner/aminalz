@@ -39,7 +39,6 @@ import {
     AccountSigninPage,
     AccountSigninUsingSAMLPage,
     AccountSignupPage,
-    LocationAddPage,
     DisplayResourcesPage,
     UploadResourcesPage,
     MyApp,
