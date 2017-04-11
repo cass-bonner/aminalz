@@ -105,7 +105,7 @@ export class AccountPage {
   }
 
   selectImageUsingBrowserFileSelector() {
-    let selectedFiles : any = document.getElementById('imageUpload');
+    let selectedFiles : any = document.getElementById('acctimageUpload');
     let files = selectedFiles.files;
     if (selectedFiles.value !== '' && files.length > 0) {
       let filename = this.generateUniqueFilenameForS3Upload(files[0].name);
@@ -179,10 +179,11 @@ export class AccountPage {
     }
     // check if the eventListener was already previously attached
     if (this.imageUploadEventListenerAttached) {
+      console.log("imageUploadEventListenerAttached was attached returning");
       return;
     }
     // console.log("Attaching event listener...");
-    let imageUploadFormField : any = document.getElementById('imageUpload');
+    let imageUploadFormField : any = document.getElementById('acctimageUpload');
     let imageUploadFormSubmit : any = document.getElementById('imageUploadSubmit');
 
     // try again later if the DOM isn't fully ready yet

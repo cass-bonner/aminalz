@@ -3,12 +3,22 @@
     <!--<button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>-->
+    <ion-buttons right>
+      <button ion-button icon-left [navPush]="accountSignupPage" *ngIf="globals.userId == ''">
+        <ion-icon name="contact"></ion-icon>Register
+      </button>
+      <button ion-button icon-left [navPush]="accountSigninPage" *ngIf="globals.userId == ''">
+        <ion-icon name="log-in"></ion-icon>Sign In
+      </button>
+      <button ion-button icon-left (click)="globals.logout()" *ngIf="globals.userId">
+        <ion-icon name="log-out"></ion-icon>Sign Out
+      </button>
+    </ion-buttons>
     <ion-title>Upload Resource</ion-title>
   </ion-navbar>
 </ion-header>
 
-
-<ion-content padding>
+<ion-content padding *ngIf="globals.userId">
 
 
   <!--<p *ngIf="submitted" style="color: #ea6153;">Please fill out all details accurately.</p>-->
@@ -27,13 +37,13 @@
           <ion-option value="sample">Sample</ion-option>
           <ion-option value="email">Email</ion-option>
           <ion-option value="notification">Notification</ion-option>
-          <ion-option value="notification">Task</ion-option>
+          <ion-option value="task">Task</ion-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label floating>Processing instructions</ion-label>
-        <ion-input [(ngModel)]="formData.name" ngControl="processingInstructions" name="processingInstructions" type="text" #name="ngModel" ></ion-input>
+        <ion-input [(ngModel)]="formData.processingInstructions" ngControl="processingInstructions" name="processingInstructions" type="text" #name="ngModel" ></ion-input>
       </ion-item>
 
 
@@ -49,10 +59,12 @@
         <button ion-button (click)="selectImage()" type="submit" color="primary">Select resource file</button>
       </div>
       <div *ngIf="!platform.is('cordova')">
-        <input style='font-size:12px; width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;' id="imageUpload" type="file" accept="image/*">
-        <label ion-button (click)="attachImageUploadEventListener()" color="primary" style='none;display: inline-block;' for="imageUpload" id="imageUploadLabel">Select Resource</label>
+        <input style='font-size:12px; width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;' id="imageUpload" type="file" accept="*/*">
+        <label ion-button (click)="attachImageUploadEventListener()" color="primary" style='none;display: inline-block;' for="imageUpload" id="imageUploadLabel">Select & Upload Resource</label>
         <button ion-button (click)="selectImage()" style='visibility:hidden; text-transform:none;' type="submit" color="primary" id="imageUploadSubmit">UPLOAD</button>
       </div>
+
+
       <p [hidden]="resourcefile.valid || !submitted" color="danger" padding-left>
         Resource file is required
       </p>
@@ -65,7 +77,7 @@
 
   <ion-row responsive-sm>
     <ion-col>
-      <button ion-button (click)="onSubmit(theForm)" type="submit" primary block>Upload Resource</button>
+      <button ion-button (click)="onSubmit(theForm)" style='visibility:hidden; text-transform:none;' type="submit" primary block>Upload Resource</button>
     </ion-col>
   </ion-row>
 

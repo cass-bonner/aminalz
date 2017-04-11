@@ -40,6 +40,7 @@ export class CognitoUtil {
   private static _REGION: string = Config['REGION'];
 
 
+
   public static getRegion(): string {
     return CognitoUtil._REGION;
   }

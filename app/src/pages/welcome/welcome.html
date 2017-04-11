@@ -11,7 +11,12 @@
         <ion-icon name="log-out"></ion-icon>Sign Out
       </button>
     </ion-buttons>
-    <ion-title>Welcome to aminalz!</ion-title>
+    <div *ngIf="globals.userId !== ''">
+    <ion-title>Welcome to aminalz {{globals.getUserFirstName()}} {{globals.getUserLastName()}}!</ion-title>
+    </div>
+    <div *ngIf="globals.userId == ''">
+      <ion-title>Welcome to aminalz!</ion-title>
+    </div>
   </ion-navbar>
 </ion-header>
 <ion-content class='main'>

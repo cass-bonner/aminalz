@@ -1,6 +1,6 @@
 <ion-tabs #mainTabs [selectedIndex]="mySelectedIndex">
   <ion-tab [root]="tab1Root" tabTitle="Welcome"     (ionSelect)="showRoot(mainTabs,0)" tabIcon="ribbon"></ion-tab>
   <ion-tab [root]="tab2Root" tabTitle="Upload Resources"   (ionSelect)="showRoot(mainTabs,1)" tabIcon="calendar"></ion-tab>
-  <ion-tab [root]="tab3Root" tabTitle="Processed"    (ionSelect)="showRoot(mainTabs,2)" tabIcon="search"></ion-tab>
+  <ion-tab [root]="tab3Root" tabTitle="Processed"    (ionSelect)="showRoot(mainTabs,2)" tabIcon="search" ng-click="refreshPhotos()"></ion-tab>
   <ion-tab [root]="tab4Root" tabTitle="Account"     (ionSelect)="showRoot(mainTabs,3)" tabIcon="contact"></ion-tab>
 </ion-tabs>

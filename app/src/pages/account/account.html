@@ -38,11 +38,11 @@
     <button ion-button (click)="selectImage()" type="submit" color="primary">Select image</button>
   </div>
   <div *ngIf="!platform.is('cordova')">
-    <input style='font-size:12px; width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;' id="imageUpload" type="file" accept="image/*">
-    <label ion-button (click)="attachImageUploadEventListener()" color="primary" style='none;display: inline-block;' for="imageUpload" id="imageUploadLabel">Select image</label>
+    <input style='font-size:12px; width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;' id="acctimageUpload" type="file" accept="image/*">
+    <label ion-button (click)="attachImageUploadEventListener()" color="primary" style='none;display: inline-block;' for="acctimageUpload" id="imageUploadLabel">Select image</label>
     <button ion-button (click)="selectImage()" style='visibility:hidden; text-transform:none;' type="submit" color="primary" id="imageUploadSubmit">UPLOAD</button>
   </div>
-  
+
   <br/><br/>
 
   <h5>Change password</h5>

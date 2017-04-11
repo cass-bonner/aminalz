@@ -28,8 +28,8 @@ export class AccountSigninPage {
   alertCtrl : AlertController = this.globals.getAlertController();
 
   public userData: IUserLogin = {
-    username: "user1",
-    password: "Test123!"
+    username: "ali",
+    password: "P@ssword123"
   };
 
   signInButtonClicked: boolean = false;

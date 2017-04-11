@@ -1,162 +1,240 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import{Component, OnInit, OnDestroy}from '@angular/core';
+import {AlbumInfoService}from './album-info.service';
+import {S3Service}from './s3.service';
+import {CONFIG}from './config';
 import { GlobalStateService } from '../../services/global-state.service';
+import {IntervalObservable}from 'rxjs/observable/IntervalObservable';
+import 'rxjs/add/operator/timeout';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first' ;
+import 'rxjs/add/operator/map';
+import {StepFunctionService}from './stepfunction.service';
+import {Subscription}from 'rxjs';
+import {TabsPage }from '../tabs/tabs';
+import {CognitoUtil}from '../../services/account-management.service';
+import {DoCheck, OnChanges}from '@angular/core';
+import {NgModule }from '@angular/core';
+import {IonicApp, IonicModule}from 'ionic-angular';
+import {NavController}from 'ionic-angular';
 import { AccountSigninPage } from '../account-signin/account-signin';
 import { AccountSignupPage } from '../account-signup/account-signup';
-import { LocationAddPage } from '../location-add/location-add';
-import { Location } from "../../services/aminalz-sdk/model/Location";
-import { UserLoginService } from "../../services/account-management.service";
-import { ResourceListPage } from '../resource-list/resource-list';
-import { CustomAuthorizerClient, NoAuthorizationClient, UserPoolsAuthorizerClient } from "../../services/aminalz-api.service";
-import { Config }             from '../../config/config'
-import { Logger } from '../../services/logger.service';
-
-declare const AWS: any;
 
 @Component({
-  templateUrl: 'processed-resources.html',
+  selector: 'photos',
+  templateUrl: 'processed-resources.html'
 })
-export class DisplayResourcesPage {
 
-  initialized = false;
+export class DisplayResourcesPage implements OnInit, OnDestroy {
+
+  private albumID: string;
+  private sub: any;
+  private fileSelected: any;
+  private photos: any[];
+  private isProcessingUpload: boolean;
+  private s3UploadFailure: boolean;
+  private timeoutPollingExecutionArn: boolean;
+  private doneUploading: boolean;
+  private executionArn: string;
+  private executionStatus: string;
+  private cognitoUtil = null;
   accountSigninPage = AccountSigninPage;
   accountSignupPage = AccountSignupPage;
-  locationAddPage = LocationAddPage;
-  locations: Location[] = [];
-  resourceListPage = ResourceListPage;
 
-  displayDeleteLocationConfirmation(locationId, locationName) {
-    console.log("Deleting locationID " + locationId);
 
-    let confirm = this.globals.getAlertController().create({
-      title: 'Delete location?',
-      message: `Are you sure you want to delete [<b>${locationName}</b>]? All resources and bookings associated with [<b>${locationName}</b>] will also be deleted!`,
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: () => { /* do nothing */ }
-        },
-        {
-          text: 'OK',
-          handler: () => {
-            this.deleteLocation(locationId)
-            .then(() => {
-              this.globals.dismissLoader();
-              this.globals.displayToast(`Location [${locationName}] has been successfully deleted`);
-            })
-            .catch((err) => {
-              this.globals.dismissLoader();
-              this.globals.displayAlert('Error encountered',
-                'Delete failed. Please check the console logs for more information.');
-              console.log(err);
-            });
-          }
-        }
-      ]
-    });
-    confirm.present();
+  ngOnInit(): void {
+    this.refreshPhotos();
+  //  console.log("this.globals.userid: "+ this.globals.getUserId());
   }
 
-  deleteLocation(locationId): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      // delete from the database
-      this.globals.displayLoader("Deleting...");
-      this.customAuthClient.getClient().locationsDelete(locationId).subscribe(
-        () => {
-          // remove the item from the locations array
-          let index = this.locations.findIndex( location => { return location.locationId == locationId});
-          if (index > -1) {
-            this.locations.splice(index, 1);
-          }
-          resolve();
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
-  }
 
-  gotoResourceListPage(location) {
-    this.navCtrl.push(ResourceListPage, location);
-  }
 
-  loadLocationsWithAuth(): void {
-    this.locations = [];
-    this.userPoolsAuthClient.getClient().locationsList().subscribe(
-      (data) => {
-        // this.locations = data.items
-        // sort by name
-        this.locations = data.items.sort((a, b) => {
-            return a.name.localeCompare(b.name);
+  private refreshPhotos() {
+    let promise = this.albumInfoService.listPhotos('aminalz/photos');
+    promise.then(data => {
+      this.photos = data.Items;
+      for (let i = 0; i < this.photos.length; i++) {
+
+      if (this.photos[i].imageID.toUpperCase().indexOf("TASK") != -1) {
+        this.photos[i].taskurl = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key : "Thumbnail/taskImage.png"
         });
-        this.globals.dismissLoader();
-        this.initialized = true;
-      },
-      (err) => {
-        this.globals.dismissLoader();
-        this.initialized = true;
-        console.error(err);
-        this.globals.displayAlert('Error encountered',
-          `An error occurred when trying to load the locations. Please check the console logs for more information.`)
-      }
-    );
-  };
 
-  loadLocationsWithoutAuth(): void {
-    this.locations = [];
-    this.noAuthClient.getClient().locationsList().subscribe(
-      (data) => {
-        // this.locations = data.items
-        // sort by name
-        this.locations = data.items.sort((a, b) => {
-          return a.name.localeCompare(b.name);
+      } else if (this.photos[i].imageID.toUpperCase().indexOf("EXCEL") != -1) {
+            this.photos[i].taskurl = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key : "Thumbnail/excel.png"
         });
-        this.globals.dismissLoader();
-        this.initialized = true;
-      },
-      (err) => {
-        this.globals.dismissLoader();
-        this.initialized = true;
-        console.error(err);
-        this.globals.displayAlert('Error encountered',
-          `An error occurred when trying to load the locations. Please check the console logs for more information.`)
+      } else if (this.photos[i].imageID.toUpperCase().indexOf("POWER") != -1) {
+            this.photos[i].taskurl = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key : "Thumbnail/powerpoint.png"
+        });
+      } else if (this.photos[i].imageID.toUpperCase().indexOf("WORD") != -1) {
+            this.photos[i].taskurl = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key : "Thumbnail/word.png"
+        });
+      } else if (this.photos[i].imageID.toUpperCase().indexOf("PDF") != -1) {
+            this.photos[i].taskurl = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key : "Thumbnail/pdf.png"
+        });
+      } else if (this.photos[i].imageID.toUpperCase().indexOf("UNKNOWN") != -1) {
+            this.photos[i].taskurl = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key : "Thumbnail/unknown.jpeg"
+        });
       }
-    );
-  };
+      else {
+        this.photos[i].url = this.s3uploadService.getDownloadPresignedUrl({
+          Bucket: CONFIG.S3PhotoRepoBucket,
+          Key: "Thumbnail/" + this.photos[i].imageID
+        });
 
+      }
 
-  constructor(private navCtrl: NavController,  public globals: GlobalStateService, private noAuthClient: NoAuthorizationClient, private customAuthClient: CustomAuthorizerClient, private userPoolsAuthClient: UserPoolsAuthorizerClient) {
+      }
+    });
+  }
+
+  constructor(public navCtrl: NavController,
+              private albumInfoService: AlbumInfoService,
+              private globals: GlobalStateService,
+              private s3uploadService: S3Service,
+              private stepFunctionService: StepFunctionService) {
+  this.cognitoUtil = new CognitoUtil();
   }
   ionViewDidEnter() {
+    console.log('ionViewDidEnter');
+    this.refreshPhotos();
+  }
 
-    Logger.banner("Processed Resources");
-
-    this.initialized = true;
-    this.locations = [];
-
-    if (Config['DEVELOPER_MODE']) {
-      this.initialized = false;
-
-      if (UserLoginService.getAwsAccessKey() != null) {
-      // if (CognitoUtil.getUserState() === UserState.SignedIn) {
-        // console.log(AWS.config.credentials);
-        UserLoginService.getAwsCredentials()
-        .then(() => {
-          this.globals.displayLoader("Loading...");
-          this.loadLocationsWithAuth();
-        })
-        .catch((err) => {
-          console.log("ERROR: Unable to load locations!");
-          console.log(err)
-        })
-      }
+  ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
     }
   }
 
-  ionViewDidLeave() {
-    this.initialized = false;
-    this.locations = [];
+
+  fileChangeEvent(fileInput: any): void {
+    if (fileInput.target.files && fileInput.target.files[0]) {
+      this.fileSelected = fileInput.target.files[0];
+      console.log(fileInput.target.files[0]);
+    }
   }
 
+  upload(): void {
+    if (!this.fileSelected) {
+      return;
+    }
+
+    this.isProcessingUpload = true;
+    this.doneUploading = false;
+    this.executionArn = null;
+    this.executionStatus = null;
+    this.s3UploadFailure = false;
+    this.timeoutPollingExecutionArn = false;
+
+    const metadata = {
+      userid: 'aminalz',
+      albumid: 'aminalz/photos'
+    };
+
+    const objectID = this.generateObjectID();
+
+    let params: any = {
+      Metadata: metadata,
+      Key: "Incoming/" + objectID,
+      Bucket: CONFIG.S3PhotoRepoBucket,
+      Body: this.fileSelected
+    };
+
+    const contentType = this.inferContentType();
+    if (contentType) {
+      params.ContentType = contentType;
+    }
+
+    this.s3uploadService.upload(params).then((data: any) => {
+      this.doneUploading = true;
+      this.pollExecutionArn(objectID);
+    }).catch((err: any) => {
+      this.reset();
+      this.doneUploading = true;
+      this.s3UploadFailure = true;
+      console.log(err);
+    });
+  }
+
+  pollExecutionArn(imageID: string): void {
+    const interval = IntervalObservable.create(1000);
+    const arnObservable = interval.switchMap(() => this.albumInfoService.getInfo(imageID))
+      .filter((item) => (item && item.hasOwnProperty('executionArn')))
+      .map((item) => (item.executionArn))
+      .timeout(8000) // 8 seconds
+      .first();
+    arnObservable.subscribe((arn) => {
+      this.executionArn = arn;
+      this.pollExecutionStatus(arn);
+    }, (err) => {
+      if (err.name && err.name === "TimeoutError") {
+        this.timeoutPollingExecutionArn = true;
+        this.reset();
+      }
+    });
+  }
+
+  pollExecutionStatus(executionArn: string): void {
+    let polling: Subscription;
+    let successPromise = new Promise((resolve, reject) => {
+      polling = IntervalObservable.create(1000)
+        .switchMap(() => this.stepFunctionService.checkExecutionStatus(executionArn))
+        .subscribe((status) => {
+          this.executionStatus = status;
+          if (status !== "RUNNING") {
+            resolve();
+          }
+        });
+    });
+    successPromise.then(() => {
+      if (polling) {
+        polling.unsubscribe();
+      }
+      this.reset();
+    });
+  }
+
+  private reset() {
+    this.isProcessingUpload = false;
+    this.fileSelected = null;
+    this.refreshPhotos();
+  }
+
+  getInfo(photo: any): void {
+    this.albumInfoService.getInfo(photo.imageID).then((data: any) => {
+      console.log(data);
+    });
+  }
+
+  private generateObjectID() {
+    return ("" + new Date().getTime()).split("").reverse().join("")
+      + "-" + this.albumID
+      + "-" + this.fileSelected.name;
+  }
+
+  private inferContentType(): string {
+    // Infer the image type.
+    const typeMatch = this.fileSelected.name.match(/\.([^.]*)$/);
+    if (typeMatch) {
+      const imageType = typeMatch[1];
+      if (imageType === "jpeg" || imageType === "jpg") {
+        return "image/jpeg";
+      } else if (imageType === "png") {
+        return "image/png";
+      }
+    }
+    return null;
+  }
 }

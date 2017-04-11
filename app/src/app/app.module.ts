@@ -11,21 +11,23 @@ import { AccountPage }                 from '../pages/account/account';
 import { AccountSigninPage }           from '../pages/account-signin/account-signin';
 import { AccountSigninUsingSAMLPage }  from '../pages/account-signin-using-saml/account-signin-using-saml';
 import { AccountSignupPage }           from '../pages/account-signup/account-signup';
-import { BookingsPage }                from '../pages/bookings/bookings';
 import { DisplayResourcesPage }            from '../pages/processed-resources/processed-resources';
-import { LocationAddPage }             from '../pages/location-add/location-add';
-import { ResourceListPage }            from '../pages/resource-list/resource-list';
 import { UploadResourcesPage }             from '../pages/resource-add/resource-add';
-import { ResourceAvailabilityPage }    from '../pages/resource-availability/resource-availability';
 import { TabsPage }                    from '../pages/tabs/tabs';
 import { WelcomePage }                 from '../pages/welcome/welcome';
 import { BrowserModule }               from "@angular/platform-browser";
 import { HttpService }                 from "../services/http-service";
+import { AlbumInfoService }            from '../pages/processed-resources/album-info.service';
+import {PhotoComponent} from '../pages/processed-resources/photos.component';
+import {S3Service} from '../pages/processed-resources/s3.service';
+import {StepFunctionService} from '../pages/processed-resources/stepfunction.service';
+import {RoundPipe} from '../pages/processed-resources/round.pipe';
 import {
   IamAuthorizerClient,
   CustomAuthorizerClient,
   UserPoolsAuthorizerClient,
-  NoAuthorizationClient
+  NoAuthorizationClient,
+
 } from "../services/aminalz-api.service";
 
 @NgModule({
@@ -37,12 +39,9 @@ import {
     AccountSigninPage,
     AccountSigninUsingSAMLPage,
     AccountSignupPage,
-    BookingsPage,
     LocationAddPage,
     DisplayResourcesPage,
     UploadResourcesPage,
-    ResourceListPage,
-    ResourceAvailabilityPage,
     MyApp,
     TabsPage,
     WelcomePage
@@ -61,12 +60,8 @@ import {
     AccountSigninPage,
     AccountSigninUsingSAMLPage,
     AccountSignupPage,
-    BookingsPage,
-    LocationAddPage,
     DisplayResourcesPage,
     UploadResourcesPage,
-    ResourceListPage,
-    ResourceAvailabilityPage,
     MyApp,
     TabsPage,
     WelcomePage,
@@ -77,6 +72,9 @@ import {
     { provide: IamAuthorizerClient, useClass: IamAuthorizerClient },
     { provide: UserPoolsAuthorizerClient, useClass: UserPoolsAuthorizerClient },
     { provide: NoAuthorizationClient, useClass: NoAuthorizationClient },
+    { provide: AlbumInfoService, useClass: AlbumInfoService },
+    { provide: S3Service, useClass: S3Service },
+    { provide: StepFunctionService, useClass: StepFunctionService },
   ]
 })
 export class AppModule {}

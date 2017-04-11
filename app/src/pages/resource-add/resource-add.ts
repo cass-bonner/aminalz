@@ -7,6 +7,9 @@ import { Logger } from '../../services/logger.service';
 import { Platform } from 'ionic-angular';
 import { ImagePicker } from 'ionic-native';
 import { Config } from '../../config/config'
+import { CognitoUtil }        from '../../services/account-management.service';
+import { AccountSigninPage } from '../account-signin/account-signin';
+import { AccountSignupPage } from '../account-signup/account-signup';
 
 
 declare const AWS: any;
@@ -19,6 +22,9 @@ export class UploadResourcesPage {
   tabsPage = TabsPage;
   location = null;
   platform : Platform;
+  cognitoUtil = null;
+  accountSigninPage = AccountSigninPage;
+  accountSignupPage = AccountSignupPage;
 
   imageUploadEventListenerAttached = false;
   profileImageURI = `https://s3-${Config.REGION}.amazonaws.com/${Config.PROFILE_IMAGES_S3_BUCKET}/test.jpg`;
@@ -52,12 +58,23 @@ export class UploadResourcesPage {
     console.log("adding resource");
     if (form && this.formData.resourcefile) {
 
+    let cognitoUserName = null;
+
+    try {
+        cognitoUserName = CognitoUtil.getUsername();
+        console.log("Cognito USER name: " + cognitoUserName);
+      } catch (e) {
+        console.log(`Unable to retrieve user's session info from localStorage`);
+        console.log(e);
+      }
+
       let resource = {
         resourceType: this.formData.resourceType,
         processingInstructions: this.formData.processingInstructions,
         tags: this.formData.tags,
         description: this.formData.description,
-        resourcefile: this.formData.resourcefile
+        resourcefile: this.formData.resourcefile,
+        name: cognitoUserName
       };
       let input = {
         input: resource
@@ -120,10 +137,13 @@ export class UploadResourcesPage {
   }
 
   uploadFileToS3(file, key) {
-    Logger.heading('Uploading image to S3');
-    this.globals.displayLoader('Uploading image to Amazon S3...', 10000);
+    Logger.heading('Uploading resource to S3');
+   // let cognitoUser = CognitoUtil.getCognitoUser();
+  //  console.log("In s3:...... COGNITO USER: " + cognitoUser);
+    this.globals.displayLoader('Uploading resource to Amazon S3...', 10000);
     let bucketName = Config.PROFILE_IMAGES_S3_BUCKET;
     console.log(`Attempting image upload to ${bucketName}/${key}`);
+    console.log("creating s3 bucket");
     let s3bucket = new AWS.S3({region: Config.REGION, params: {Bucket: bucketName}});
     let metadata ={'albumid': 'aminalz/photos', 'userid': 'aminalz'};
     let params = {Key: key, Body: file, Metadata: metadata};
@@ -137,10 +157,14 @@ export class UploadResourcesPage {
         console.log(err);
       } else {
         console.log(`Successfully uploaded resource to S3.`);
+        console.log(`resource identifier is: ` + this.formData.resourcefile);
         this.profileImageURI = `https://s3.amazonaws.com/${Config.PROFILE_IMAGES_S3_BUCKET}/${key}`;
         this.formData.resourcefile=this.profileImageURI
         console.log(`Image can be viewed at: ${this.profileImageURI}`)
         this.profileImageDisplay = true;
+        console.log("calling submit...");
+
+        this.onSubmit(this.formData);
       }
     });
   }
@@ -233,7 +257,8 @@ export class UploadResourcesPage {
       }
       // check if the eventListener was already previously attached
       if (this.imageUploadEventListenerAttached) {
-        return;
+        console.log("listener was attached - i would have returned but i'm not going to");
+       // return;
       }
       // console.log("Attaching event listener...");
       let imageUploadFormField : any = document.getElementById('imageUpload');
@@ -244,6 +269,7 @@ export class UploadResourcesPage {
         return;
       }
       this.imageUploadEventListenerAttached = true;
+      console.log("imageUploadEventListenerAttached set to true");
       imageUploadFormField.addEventListener('change', function( e ) {
         let fileName = e.target.value.split( '\\' ).pop();
         if (fileName === null || fileName === '') {
@@ -269,9 +295,13 @@ export class UploadResourcesPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private globals: GlobalStateService, private customAuthClient: CustomAuthorizerClient, platform: Platform) {
     this.location = "77812650-00b6-11e7-b638-7703a6651896";
     this.platform = platform;
+    this.cognitoUtil = new CognitoUtil();
   }
 
   ionViewDidEnter() {
     Logger.banner("Add a Resource");
+    console.log("attaching image upload event listener");
+    this.attachImageUploadEventListener();
+
   }
 }

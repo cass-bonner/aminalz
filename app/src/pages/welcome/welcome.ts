@@ -40,8 +40,8 @@ export class WelcomePage {
         Logger.heading("User sign-in");
 
         let userData: IUserLogin = {
-          username: "user1",
-          password: "Test123!"
+          username: "cass",
+          password: "Password123"
         };
         UserLoginService.signIn(userData).then(() => {
           // set the property, so that Angular2's two-way variable binding works
